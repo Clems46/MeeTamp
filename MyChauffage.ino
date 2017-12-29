@@ -12,7 +12,7 @@ const int BpMode = D5;
 
 int state;
 int bpModeState = 0;
-int mOde = 0;
+int mOde = 1;
 unsigned long time1 = 297000;   //4'57''
 unsigned long time2 = 293000;   //4'53''
 unsigned long time3 = 3000;
@@ -21,7 +21,7 @@ unsigned long time4 = 7000;
 unsigned long previousMillis;
 unsigned long currentMillis;
 
-int answer;
+int answer = 0;
 int Value = 0;
 
 
@@ -75,6 +75,8 @@ void confortMoins1(){   //Mode confort - 1 : Rien pendant 4'57'' puis Pleine alt
      delay(20);
      Serial.println("4 minutes 57");
 
+     bpModeState = digitalRead(BpMode);
+
      unsigned long calcul;
      calcul = time1 - (currentMillis - previousMillis);
      Serial.print("temps restant = ");
@@ -96,7 +98,7 @@ void confortMoins1(){   //Mode confort - 1 : Rien pendant 4'57'' puis Pleine alt
       
       int j = 1;
       while(j == 1) {
-
+            bpModeState = digitalRead(BpMode);
              // If an order is available, then exit the loop
              
              if (Serial.available() > 0  || bpModeState == 1) {
@@ -136,6 +138,8 @@ void confortMoins2(){   //Mode confort - 2 : Rien pendant 4'53'' puis Pleine alt
      delay(20);
      Serial.println("4 minutes 53");
 
+     bpModeState = digitalRead(BpMode);
+
      unsigned long calcul;
      calcul = time2 - (currentMillis - previousMillis);
      Serial.print("temps restant = ");
@@ -159,7 +163,7 @@ void confortMoins2(){   //Mode confort - 2 : Rien pendant 4'53'' puis Pleine alt
       while(j == 1) {
 
              // If an order is available, then exit the loop
-             
+             bpModeState = digitalRead(BpMode);
              if (Serial.available() > 0 || bpModeState == 1) {
             j = 0;
             delay(10);
@@ -201,48 +205,85 @@ void loop() {
   delay(500);  
  }
 
- if (mOde == 7) {
+ if (mOde > 6) {
   mOde = 0;
  }
  
- if (Serial.available() > 0 && mOde == 0) {
+ switch (mOde) {
+    default :
+    Serial.println("Mode Auto activé");
+    if(Serial.available()>0) {
     // get incoming byte:
     answer = Serial.read();
     delay(10);
     Serial.print("answer = ");
     Serial.println(answer);
-    
     }
- if (answer == 48  || mOde == 6) {
+    switch(answer) {
+      case 49:
+      Serial.println("Mode 1");
+      confort();
+      break;
+      case 50: 
+      Serial.println("Mode 2");
+      confortMoins1();
+      break;
+      case 51:
+      Serial.println("Mode 3");
+      confortMoins2();
+      break;
+      case 52:
+      Serial.println("Mode 4");
+      eco();
+      break;
+      case 53:
+      Serial.println("Mode 5");
+      horsGel();
+      break;
+      case 54:
+      Serial.println("Mode 6");
+      arret();
+      break;
+      
+    }
+    
+ case 6:
     arret();
     Serial.println ("ARRET CHAUFFAGE");
     digitalWrite(LED_BUILTIN, LOW);
-    }
- else if (answer == 50  || mOde ==  4) {
+    break;
+    
+ case 4:
     eco();
     Serial.println ("Mode ECO");
     digitalWrite(LED_BUILTIN, LOW);
-    }
- else if (answer == 51 || mOde == 5) {
+    break;
+    
+ case 5:
     horsGel();
     Serial.println ("Mode Hors Gel");
     digitalWrite(LED_BUILTIN, LOW);
-    }
- else if (answer == 52 || mOde == 2) {
+    break;
+    
+ case 2:
     confortMoins1();
     Serial.println ("Mode confort - 1");
     digitalWrite(LED_BUILTIN, LOW);
-    }
-  
- else {
+    break;
+    
+ case 1:
     confort();
     Serial.println ("Mode confort");
     digitalWrite(LED_BUILTIN, HIGH);
+    break;
+    
+ case 3:
+    confortMoins2();
+    Serial.println ("Mode confort - 2");
+    digitalWrite(LED_BUILTIN, LOW);
+    break;
+    
+  }
 
-     }
-     if ( mOde == 1) {
-        confort();
-        Serial.println ("Mode confort");
-        digitalWrite(LED_BUILTIN, HIGH);
-     }
+
 }
