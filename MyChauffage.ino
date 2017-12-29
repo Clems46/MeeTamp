@@ -13,6 +13,7 @@ const int BpMode = D5;
 int state;
 int bpModeState = 0;
 int mOde = 1;
+int set = 0;
 unsigned long time1 = 297000;   //4'57''
 unsigned long time2 = 293000;   //4'53''
 unsigned long time3 = 3000;
@@ -202,6 +203,7 @@ void loop() {
   mOde++;
   Serial.print("Bouton Mode appuyé. Mode selectionné : ");
   Serial.println(mOde);
+  set = 1;
   delay(500);  
  }
 
@@ -211,6 +213,16 @@ void loop() {
  
  switch (mOde) {
     default :
+    if (set == 1){ 
+        for (int i = 0; i < 10; i++) {
+        digitalWrite(LED_BUILTIN, LOW);
+        delay(175);
+        digitalWrite(LED_BUILTIN, HIGH);
+        delay(175);
+    }
+    set = 0;
+    }
+    digitalWrite(LED_BUILTIN, LOW);
     Serial.println("Mode Auto activé");
     if(Serial.available()>0) {
     // get incoming byte:
@@ -248,39 +260,87 @@ void loop() {
     }
     
  case 6:
+    if (set == 1){ 
+        for (int i = 0; i < 6; i++) {
+        digitalWrite(LED_BUILTIN, LOW);
+        delay(175);
+        digitalWrite(LED_BUILTIN, HIGH);
+        delay(175);
+    }
+    set = 0;
+    }
     arret();
-    Serial.println ("ARRET CHAUFFAGE");
-    digitalWrite(LED_BUILTIN, LOW);
+    Serial.println ("ARRET CHAUFFAGE");  
     break;
     
  case 4:
+    if (set == 1){ 
+        for (int i = 0; i < 4; i++) {
+        digitalWrite(LED_BUILTIN, LOW);
+        delay(175);
+        digitalWrite(LED_BUILTIN, HIGH);
+        delay(175);
+    }
+    set = 0;
+    }
     eco();
     Serial.println ("Mode ECO");
-    digitalWrite(LED_BUILTIN, LOW);
     break;
     
  case 5:
+    if (set == 1){ 
+        for (int i = 0; i < 5; i++) {
+        digitalWrite(LED_BUILTIN, LOW);
+        delay(175);
+        digitalWrite(LED_BUILTIN, HIGH);
+        delay(175);
+    }
+    set = 0;
+    }
     horsGel();
     Serial.println ("Mode Hors Gel");
-    digitalWrite(LED_BUILTIN, LOW);
     break;
     
  case 2:
+    if (set == 1){ 
+        for (int i = 0; i < 2; i++) {
+        digitalWrite(LED_BUILTIN, LOW);
+        delay(175);
+        digitalWrite(LED_BUILTIN, HIGH);
+        delay(175);
+    }
+    set = 0;
+    }
     confortMoins1();
     Serial.println ("Mode confort - 1");
-    digitalWrite(LED_BUILTIN, LOW);
     break;
     
  case 1:
+    if (set == 1){ 
+        for (int i = 0; i < 1; i++) {
+        digitalWrite(LED_BUILTIN, LOW);
+        delay(175);
+        digitalWrite(LED_BUILTIN, HIGH);
+        delay(175);
+    }
+    set = 0;
+    }
     confort();
     Serial.println ("Mode confort");
-    digitalWrite(LED_BUILTIN, HIGH);
     break;
     
  case 3:
+    if (set == 1){ 
+        for (int i = 0; i < 3; i++) {
+        digitalWrite(LED_BUILTIN, LOW);
+        delay(175);
+        digitalWrite(LED_BUILTIN, HIGH);
+        delay(175);
+    }
+    set = 0;
+    }
     confortMoins2();
     Serial.println ("Mode confort - 2");
-    digitalWrite(LED_BUILTIN, LOW);
     break;
     
   }
